@@ -1,8 +1,12 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import {server} from '../config'
+import {ApolloClient, InMemoryCache, gql, HttpLink} from '@apollo/client'
+import { cache } from 'react'
 
-export default function Home() {
+export default function Home({posts}) {
+  console.log(posts)
   return (
     <div className={styles.container}>
       <Head>
@@ -18,7 +22,7 @@ export default function Home() {
 
         <p className={styles.description}>
           Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
+          <code className={styles.code}>pages/index.tsx</code>
         </p>
 
         <div className={styles.grid}>
@@ -42,6 +46,8 @@ export default function Home() {
 
           <a
             href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
             className={styles.card}
           >
             <h2>Deploy &rarr;</h2>
@@ -66,4 +72,40 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+
+export async function getStaticProps(){
+
+  const client = new ApolloClient({
+    link: new HttpLink({ uri: `${server}/graphql`, fetch }),
+    cache: new InMemoryCache()
+  });
+  
+  const { data } = await client.query({
+    query: gql`
+          query {
+              posts {
+                data {
+                  id
+                  attributes {
+                    title
+                    date
+                    body
+                    slug
+                    author
+                  }
+                }
+              }
+      }
+    `
+  })
+
+
+  return {
+    props: {
+      posts: data,
+    },
+  }
+
 }
