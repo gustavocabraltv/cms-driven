@@ -4,6 +4,7 @@ import styles from '../styles/Home.module.css'
 import {server} from '../config'
 import {ApolloClient, InMemoryCache, gql, HttpLink} from '@apollo/client'
 import { cache } from 'react'
+import BlogList from '../components/BlogList'
 
 export default function Home({posts}) {
   console.log(posts)
@@ -58,18 +59,10 @@ export default function Home({posts}) {
         </div>
       </main>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
+      <BlogList allBlogs={posts.posts}/>
+
+     
+    
     </div>
   )
 }
